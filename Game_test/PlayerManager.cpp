@@ -32,6 +32,7 @@ void PlayerManager::updateUI() {
 		ss << "Player selected unit: " << selectedUnit->getComponent<UnitComponent>().name;
 		ss << ", Health: " << selectedUnit->getComponent<UnitComponent>().health; 
 		ss << ", Movement range: " << selectedUnit->getComponent<UnitComponent>().movementRange;
+		ss << ", Building: " << selectedUnit->getComponent<UnitComponent>().building;
 	}
 	else {
 		ss << "Player selected unit: None";

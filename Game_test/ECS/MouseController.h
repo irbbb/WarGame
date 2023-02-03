@@ -40,6 +40,12 @@ public:
 			int xPosScreen = Game::event.button.x + Game::camera.x;
 			int yPosScreen = Game::event.button.y + Game::camera.y;
 
+			int xTileScreen = xPosScreen / SCALED_TILE_SIZE;
+			int yTileScreen = yPosScreen / SCALED_TILE_SIZE;
+
+			int xTileTransform = transform->position.x / SCALED_TILE_SIZE;
+			int yTileTransform = transform->position.y / SCALED_TILE_SIZE;
+
 			switch (Game::event.button.button) {
 			case SDL_BUTTON_LEFT:
 				// If an unit is in the same tile as click and selected unit is different from this unit, select it
@@ -48,24 +54,20 @@ public:
 						unit->player->selectUnit(entity);
 					}
 				}
-				else if (
-				// Check if this unit is the selected unit,
-				unit->player->selectedUnit == entity && 
-				// can move to the clicked tiled
-				unit->player->selUnitMov[xPosScreen / SCALED_TILE_SIZE + yPosScreen / SCALED_TILE_SIZE * WIDTH_MAP] &&
-				// and move it to clicked tile, but if tile is occupied not
-				Game::map->occupyTile(xPosScreen / SCALED_TILE_SIZE, yPosScreen / SCALED_TILE_SIZE))
-				{
+				else if (unit->player->selectedUnit == entity && unit->player->selUnitMov[xTileScreen + yTileScreen * WIDTH_MAP] && Game::map->occupyTile(xTileScreen, yTileScreen)) {
 					if (unit->building != nullptr) {
 						unit->building->emptyBuilding = true;
-						BuildingComponent* building = (BuildingComponent*) unit->player->getBuilding(transform->position.x, transform->position.y);
-						unit->setBuilding(building);
+					}
+
+					BuildingComponent* building = (BuildingComponent*) unit->player->getBuilding(xTileScreen * SCALED_TILE_SIZE, yTileScreen * SCALED_TILE_SIZE);
+					unit->setBuilding(building);
+					if (building != nullptr) {
+						building->emptyBuilding = false;
 					}
 					// Free last position tile
-					Game::map->freeTile(transform->position.x / SCALED_TILE_SIZE, transform->position.y / SCALED_TILE_SIZE);
+					Game::map->freeTile(xTileTransform, yTileTransform);
 					// Set last position tile to clicked tile
-					transform->position = Vector2D(xPosScreen / SCALED_TILE_SIZE * SCALED_TILE_SIZE,
-						yPosScreen / SCALED_TILE_SIZE * SCALED_TILE_SIZE);
+					transform->position = Vector2D(xTileScreen * SCALED_TILE_SIZE, yTileScreen * SCALED_TILE_SIZE);
 					// Deselect unit when moved
 					unit->player->selectUnit(nullptr);
 				}
@@ -97,9 +99,13 @@ public:
 
 			switch (Game::event.button.button) {
 			case SDL_BUTTON_LEFT:
-				if (building->emptyBuilding) {
-					building->player->addUnit("helicopter", transform->position.x / SCALED_TILE_SIZE, transform->position.y / SCALED_TILE_SIZE, building);
-					building->emptyBuilding = false;
+				if (xPosScreen / SCALED_TILE_SIZE == transform->position.x / SCALED_TILE_SIZE 
+								&& yPosScreen / SCALED_TILE_SIZE == transform->position.y / SCALED_TILE_SIZE) {
+					if (building->emptyBuilding) {
+						std::cout << "add unit" << std::endl;
+						building->player->addUnit("helicopter", transform->position.x / SCALED_TILE_SIZE, transform->position.y / SCALED_TILE_SIZE, building);
+						building->emptyBuilding = false;
+					}
 				}
 				break;
 			default:
