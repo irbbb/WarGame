@@ -134,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AssetManager.cpp" />
+    <ClCompile Include="BuildingManager.cpp" />
     <ClCompile Include="ECS\ECS.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="ECS\KeyboardController.h" />
     <ClInclude Include="ECS\MouseController.h" />
     <ClInclude Include="ECS\TileComponent.h" />
+    <ClInclude Include="BuildingManager.h" />
     <ClInclude Include="MovementMap.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="ECS\UIText.h" />

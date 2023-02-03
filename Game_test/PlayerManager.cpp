@@ -3,6 +3,7 @@
 #include "ECS/Components.h"
 #include <sstream>
 #include "MovementMap.h"
+#include "BuildingManager.h"
 
 extern Manager manager;
 
@@ -10,6 +11,7 @@ PlayerManager::PlayerManager(){
 	player = &manager.addEntity();
 	uiManager = new UIManager();
 	selectedUnit = nullptr;
+	gold = 20;
 }
 
 void PlayerManager::createPlayer() {
@@ -37,11 +39,20 @@ void PlayerManager::updateUI() {
 	else {
 		ss << "Player selected unit: None";
 	}
+	ss << ". Player gold: " << gold;
 
 	uiManager->updateUiText("Pos", ss.str());
 }
 
 void PlayerManager::addUnit(std::string textureID, int xTile, int yTile, void* building) {
+	int costUnit = Game::unitManager->getUnit(textureID)->getCost();
+
+	if (gold < costUnit) {
+		return;
+	}
+
+	gold -= Game::unitManager->getUnit(textureID)->getCost();
+
 	Entity* unit = Game::unitManager->createUnit(textureID, this, xTile, yTile);
 	
 	unit->getComponent<UnitComponent>().setBuilding((BuildingComponent*)building);
@@ -50,16 +61,7 @@ void PlayerManager::addUnit(std::string textureID, int xTile, int yTile, void* b
 }
 
 void PlayerManager::addBuilding(std::string id, int xTile, int yTile) {
-
-	Entity* city = &manager.addEntity();
-
-	city->addComponent<TransformComponent>(xTile * SCALED_TILE_SIZE, yTile * SCALED_TILE_SIZE, 32, 32, 2);
-	city->addComponent<SpriteComponent>(id);
-	city->addComponent<BuildingComponent>(this);
-	city->addComponent<MouseControllerBuilding>();
-	city->addGroup(Game::groupBuildings);
-
-	buildings.emplace_back(city);
+	buildings.emplace_back(BuildingManager::createBuilding("city", this, xTile, yTile, &manager));
 }
 
 void PlayerManager::selectUnit(Entity* unit) {

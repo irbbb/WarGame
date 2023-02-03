@@ -2,7 +2,8 @@
 
 Unit::Unit() {};
 
-Unit::Unit(std::string name, int h, std::size_t t, int mRange) : nameUnit(name), healthUnit(h), typeUnit(t), movementRange(mRange){
+Unit::Unit(std::string name, int h, std::size_t t, int mRange, int cost) : 
+	nameUnit(name), healthUnit(h), typeUnit(t), movementRange(mRange), costUnit(cost){
 
 }
 
@@ -18,4 +19,8 @@ int Unit::getHealth() {
 
 int Unit::getMovementRange() {
 	return movementRange;
+}
+
+int Unit::getCost() {
+	return costUnit;
 }

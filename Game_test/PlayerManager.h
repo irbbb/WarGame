@@ -30,4 +30,5 @@ private:
 	Entity* player;
 	std::vector<Entity*> units;
 	std::vector<Entity*> buildings;
+	int gold;
 };

@@ -102,7 +102,6 @@ public:
 				if (xPosScreen / SCALED_TILE_SIZE == transform->position.x / SCALED_TILE_SIZE 
 								&& yPosScreen / SCALED_TILE_SIZE == transform->position.y / SCALED_TILE_SIZE) {
 					if (building->emptyBuilding) {
-						std::cout << "add unit" << std::endl;
 						building->player->addUnit("helicopter", transform->position.x / SCALED_TILE_SIZE, transform->position.y / SCALED_TILE_SIZE, building);
 						building->emptyBuilding = false;
 					}

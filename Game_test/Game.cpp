@@ -81,6 +81,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	player->addUnit("soldier", 2, 3, nullptr);
 	player->addUnit("helicopter", 4, 4, nullptr);
 	player->addBuilding("city", 2, 4);
+	player->addBuilding("city", 3, 5);
 
 
 	SDL_Color white = { 255, 255, 255 };

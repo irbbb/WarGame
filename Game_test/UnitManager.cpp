@@ -5,9 +5,9 @@
 extern Manager manager;
 
 UnitManager::UnitManager() {
-	units.emplace("tank", new Unit("tank", 20, Unit::land, 3));
-	units.emplace("soldier", new Unit("soldier", 10, Unit::land, 4));
-	units.emplace("helicopter", new Unit("helicopter", 10, Unit::air, 6));
+	units.emplace("tank", new Unit("tank", 20, Unit::land, 3, 2));
+	units.emplace("soldier", new Unit("soldier", 10, Unit::land, 4, 1));
+	units.emplace("helicopter", new Unit("helicopter", 10, Unit::air, 6, 3));
 }
 
 UnitManager::~UnitManager() {
