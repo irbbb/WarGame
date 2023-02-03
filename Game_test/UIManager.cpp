@@ -21,3 +21,11 @@ void UIManager::addText(std::string id, int xPos, int yPos, std::string text, st
 void UIManager::updateUiText(std::string id, std::string text) {
 		texts[id]->getComponent<UIText>().setText(text, "arial");
 }
+
+void UIManager::addRect(int xPos, int yPos, int w, int h, Uint32 bgColor) {
+	Entity* square = &manager.addEntity();
+
+	square->addComponent<UIRect>(xPos, yPos, w, h, bgColor);
+	square->addGroup(Game::groupUI);
+
+}

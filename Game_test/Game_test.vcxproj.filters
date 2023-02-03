@@ -122,5 +122,8 @@
     <ClInclude Include="BuildingManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ECS\UIRect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

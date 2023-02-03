@@ -24,22 +24,20 @@ void PlayerManager::createPlayer() {
 
 void PlayerManager::createUI() {
 	SDL_Color white = { 255, 255, 255 };
+	uiManager->addRect(0, 0, CAMERA_WIDTH / 2, 40, 0xFF000000);
 	uiManager->addText("Pos", 10, 10, "Text", "arial", white);
 }
 
 void PlayerManager::updateUI() {
 	std::stringstream ss;
 
+	ss << "Player gold: " << gold;
+	
 	if (selectedUnit != nullptr) {
-		ss << "Player selected unit: " << selectedUnit->getComponent<UnitComponent>().name;
+		ss << ". Player selected unit: " << selectedUnit->getComponent<UnitComponent>().name;
 		ss << ", Health: " << selectedUnit->getComponent<UnitComponent>().health; 
 		ss << ", Movement range: " << selectedUnit->getComponent<UnitComponent>().movementRange;
-		ss << ", Building: " << selectedUnit->getComponent<UnitComponent>().building;
 	}
-	else {
-		ss << "Player selected unit: None";
-	}
-	ss << ". Player gold: " << gold;
 
 	uiManager->updateUiText("Pos", ss.str());
 }

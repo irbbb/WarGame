@@ -167,6 +167,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="PlayerManager.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="ECS\UIRect.h" />
     <ClInclude Include="Unit.h" />
     <ClInclude Include="UnitManager.h" />
     <ClInclude Include="Vector2D.h" />

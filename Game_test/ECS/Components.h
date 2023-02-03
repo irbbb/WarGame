@@ -7,5 +7,6 @@
 #include "BuildingComponent.h"
 #include "UnitComponent.h"
 #include "UIText.h"
+#include "UIRect.h"
 #include "MouseController.h"
 #include "KeyboardController.h"

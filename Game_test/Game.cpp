@@ -85,8 +85,6 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	player->addBuilding("city", 3, 5);
 	player->addBuilding("airport", 6, 3);
 
-	SDL_Color white = { 255, 255, 255 };
-
 }
 
 auto& tiles(manager.getGroup(Game::groupMap));
