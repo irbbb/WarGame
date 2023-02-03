@@ -23,7 +23,7 @@ public:
 	Entity* getPlayer();
 
 	Entity* selectedUnit;
-	std::bitset<HEIGHT_MAP* WIDTH_MAP> selUnitMov;
+	std::bitset<HEIGHT_MAP* WIDTH_MAP> selUnitMov; // Bitset containing all posibles cells to move selected unit
 	
 private:
 	UIManager* uiManager;

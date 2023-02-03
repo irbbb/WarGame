@@ -61,7 +61,7 @@ void PlayerManager::addUnit(std::string textureID, int xTile, int yTile, void* b
 }
 
 void PlayerManager::addBuilding(std::string id, int xTile, int yTile) {
-	buildings.emplace_back(BuildingManager::createBuilding("city", this, xTile, yTile, &manager));
+	buildings.emplace_back(BuildingManager::createBuilding(id, this, xTile, yTile, &manager));
 }
 
 void PlayerManager::selectUnit(Entity* unit) {

@@ -3,6 +3,7 @@
 #include "../Game.h"
 #include "Components.h"
 #include "../Constants.h"
+#include "../BuildingManager.h"
 
 class MouseControllerPlayer : public Component {
 public:
@@ -97,12 +98,23 @@ public:
 			int xPosScreen = Game::event.button.x + Game::camera.x;
 			int yPosScreen = Game::event.button.y + Game::camera.y;
 
+			int xTileScreen = xPosScreen / SCALED_TILE_SIZE;
+			int yTileScreen = yPosScreen / SCALED_TILE_SIZE;
+
+			int xTileTransform = transform->position.x / SCALED_TILE_SIZE;
+			int yTileTransform = transform->position.y / SCALED_TILE_SIZE;
+
+			std::vector<std::string> posibleUnits = BuildingManager::getValidUnitsToGenerate(building->typeBuilding);
+
 			switch (Game::event.button.button) {
 			case SDL_BUTTON_LEFT:
-				if (xPosScreen / SCALED_TILE_SIZE == transform->position.x / SCALED_TILE_SIZE 
-								&& yPosScreen / SCALED_TILE_SIZE == transform->position.y / SCALED_TILE_SIZE) {
+				if (xTileScreen == xTileTransform && yTileScreen == yTileTransform) {
+					for (auto const& u : posibleUnits) {
+						std::cout << u << std::endl;
+					}
 					if (building->emptyBuilding) {
-						building->player->addUnit("helicopter", transform->position.x / SCALED_TILE_SIZE, transform->position.y / SCALED_TILE_SIZE, building);
+						std::cout << building->typeBuilding << std::endl;
+						building->player->addUnit(posibleUnits[0], xTileTransform, yTileTransform, building);
 						building->emptyBuilding = false;
 					}
 				}

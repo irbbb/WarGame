@@ -67,6 +67,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	assets->AddTexture("soldier", "assets/soldier.png");
 	assets->AddTexture("helicopter", "assets/helicopter.png");
 	assets->AddTexture("city", "assets/city.png");
+	assets->AddTexture("airport", "assets/airport.png");
 
 	assets->AddFont("arial", "assets/arial.ttf", FONT_SIZE);
 
@@ -82,7 +83,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	player->addUnit("helicopter", 4, 4, nullptr);
 	player->addBuilding("city", 2, 4);
 	player->addBuilding("city", 3, 5);
-
+	player->addBuilding("airport", 6, 3);
 
 	SDL_Color white = { 255, 255, 255 };
 
