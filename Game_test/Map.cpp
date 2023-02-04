@@ -23,6 +23,7 @@ void Map::LoadMap(std::string path, int xSize, int ySize) {
 		for (int x = 0; x < xSize; x++) {
 			mapFile.get(c);
 			ySrc = atoi(&c) * tileSize;
+			tileTypes.push_back(getTileType(atoi(&c)));
 			mapFile.get(c);
 			xSrc = atoi(&c) * tileSize;
 			AddTile(xSrc, ySrc, x * scaledSize, y * scaledSize);
@@ -56,4 +57,26 @@ bool Map::occupyTile(int xTile, int yTile) {
 
 bool Map::isTileOccupied(int xTile, int yTile) {
 	return occupiedTiles[xTile + yTile * WIDTH_MAP];
+}
+
+char Map::getTileType(int yPosTile) {
+	switch (yPosTile) {
+	case 0:
+		return dirt;
+	case 1:
+		return coast;
+	case 2:
+		return coast;
+	case 3:
+		return road;
+	case 4:
+		return mountain;
+	case 5:
+		return sea;
+	}
+	return none;
+}
+
+char Map::getTileType(int xTile, int yTile) {
+	return tileTypes[xTile + yTile * WIDTH_MAP];
 }

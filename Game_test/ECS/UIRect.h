@@ -24,14 +24,12 @@ public:
 		SDL_Surface* surf = SDL_CreateRGBSurface(0, position.w, position.h, 32, 0, 0, 0, 0);
 		SDL_FillRect(surf, NULL, bgColor);
 		texture = SDL_CreateTextureFromSurface(Game::renderer, surf);
-		std::cout << texture << std::endl;
 		SDL_FreeSurface(surf);
 
 		SDL_QueryTexture(texture, nullptr, nullptr, &position.w, &position.h);
 	}
 
 	void draw() override {
-		//std::cout << "draw" << std::endl;
 		SDL_RenderCopy(Game::renderer, texture, nullptr, &position);
 	}
 

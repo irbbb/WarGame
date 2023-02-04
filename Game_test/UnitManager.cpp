@@ -53,3 +53,18 @@ Entity* UnitManager::createUnit(std::string id, PlayerManager* player, int xTile
 
 	return unit;
 }
+
+bool UnitManager::isValidTileType(char tileType, char unitType, std::string unitName) {
+	switch (unitType) {
+	case Unit::air:
+		return tileType != Map::mountain;
+	case Unit::land:
+		if (unitName == "soldier") {
+			return tileType != Map::sea;
+		}
+		else {
+			return tileType != Map::sea && tileType != Map::mountain;
+		}
+	}
+	return false;
+}

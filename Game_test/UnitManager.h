@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include "PlayerManager.h"
+#include "Map.h"
 
 class UnitManager {
 public:
@@ -17,6 +18,7 @@ public:
 	std::vector<std::string> getLandUnits();
 	std::vector<std::string> getWaterUnits();
 	std::vector<std::string> getAirUnits();
+	bool isValidTileType(char type, char u, std::string unitName);
 
 private:
 	std::map<std::string, Unit*> units;

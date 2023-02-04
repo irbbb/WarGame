@@ -113,7 +113,6 @@ public:
 						std::cout << u << std::endl;
 					}
 					if (building->emptyBuilding) {
-						std::cout << building->typeBuilding << std::endl;
 						building->player->addUnit(posibleUnits[0], xTileTransform, yTileTransform, building);
 						building->emptyBuilding = false;
 					}

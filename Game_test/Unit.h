@@ -6,15 +6,16 @@ class Unit {
 public:
 
 	Unit();
-	Unit(std::string name, int h, std::size_t t, int mRange, int cost);
+	Unit(std::string name, int h, char t, int mRange, int cost);
 	~Unit();
 
 	std::string getName();
 	int getHealth();
 	int getMovementRange();
 	int getCost();
+	char getType();
 
-	enum type : std::size_t {
+	enum type : char {
 		land,
 		water,
 		air
@@ -23,7 +24,7 @@ public:
 private:
 	std::string nameUnit;
 	int healthUnit;
-	std::size_t typeUnit;
+	char typeUnit;
 	int movementRange;
 	int costUnit;
 };

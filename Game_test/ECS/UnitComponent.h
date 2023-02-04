@@ -12,6 +12,7 @@ public:
 	TransformComponent* transform;
 	PlayerManager* player;
 	std::string name;
+	char type;
 	int health;
 	int movementRange;
 	BuildingComponent* building; //Indicates in what building is placed or none
@@ -20,6 +21,7 @@ public:
 		name = u->getName();
 		health = u->getHealth();
 		movementRange = u->getMovementRange();
+		type = u->getType();
 
 		transform = nullptr;
 		player = p;

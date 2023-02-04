@@ -4,6 +4,7 @@
 #include <sstream>
 #include "MovementMap.h"
 #include "BuildingManager.h"
+#include "Game.h"
 
 extern Manager manager;
 
@@ -24,22 +25,31 @@ void PlayerManager::createPlayer() {
 
 void PlayerManager::createUI() {
 	SDL_Color white = { 255, 255, 255 };
-	uiManager->addRect(0, 0, CAMERA_WIDTH / 2, 40, 0xFF000000);
-	uiManager->addText("Pos", 10, 10, "Text", "arial", white);
+	// Player stats
+	uiManager->addRect(CAMERA_WIDTH - CAMERA_WIDTH / 4, CAMERA_HEIGHT - 70, CAMERA_WIDTH / 4, 70, 0xFF000000);
+	uiManager->addText("Player", CAMERA_WIDTH - CAMERA_WIDTH / 4 + 10, CAMERA_HEIGHT - 60, "Text", "arial", white);
+	
+	// Unit stats
+	uiManager->addRect(0, CAMERA_HEIGHT - 70, CAMERA_WIDTH / 4, 70, 0xFF000000);
+	uiManager->addText("Unit Health", 10, CAMERA_HEIGHT - 60, "Unit health", "arial", white);
+	uiManager->addText("Unit Movement Range", 10, CAMERA_HEIGHT - (60 - FONT_SIZE), "Unit Movement Range", "arial", white);
 }
 
 void PlayerManager::updateUI() {
-	std::stringstream ss;
+	std::stringstream player;
+	std::stringstream unitHealth;
+	std::stringstream unitMovementRange;
 
-	ss << "Player gold: " << gold;
+	player << "Player gold: " << gold;
 	
 	if (selectedUnit != nullptr) {
-		ss << ". Player selected unit: " << selectedUnit->getComponent<UnitComponent>().name;
-		ss << ", Health: " << selectedUnit->getComponent<UnitComponent>().health; 
-		ss << ", Movement range: " << selectedUnit->getComponent<UnitComponent>().movementRange;
+		unitHealth << "Health: " << selectedUnit->getComponent<UnitComponent>().health;
+		unitMovementRange << "Movement Range: " << selectedUnit->getComponent<UnitComponent>().movementRange;
 	}
 
-	uiManager->updateUiText("Pos", ss.str());
+	uiManager->updateUiText("Player", player.str());
+	uiManager->updateUiText("Unit Health", unitHealth.str());
+	uiManager->updateUiText("Unit Movement Range", unitMovementRange.str());
 }
 
 void PlayerManager::addUnit(std::string textureID, int xTile, int yTile, void* building) {
@@ -77,9 +87,13 @@ void PlayerManager::calculateAvailableMoves() {
 	Vector2D unitPos = selectedUnit->getComponent<TransformComponent>().position;
 	int mRange = selectedUnit->getComponent<UnitComponent>().movementRange;
 	
+	char unitType = selectedUnit->getComponent<UnitComponent>().type;
+	std::string unitName = selectedUnit->getComponent<UnitComponent>().name;
+
 	for (int y = 0; y < HEIGHT_MAP; y++) {
 		for (int x = 0; x < WIDTH_MAP; x++) {
-			if (!Game::map->isTileOccupied(x, y)) {
+			char tileType = Game::map->getTileType(x, y);
+			if (Game::unitManager->isValidTileType(tileType, unitType, unitName) && !Game::map->isTileOccupied(x, y)) {
 				if (mRange >= abs(unitPos.x / SCALED_TILE_SIZE - x) + abs(unitPos.y / SCALED_TILE_SIZE - y)) {
 					selUnitMov[x + y * WIDTH_MAP] = 1;
 				}
