@@ -31,23 +31,27 @@ void PlayerManager::createUI() {
 	
 	// Unit stats
 	uiManager->addRect(0, CAMERA_HEIGHT - 70, CAMERA_WIDTH / 4, 70, 0xFF000000);
-	uiManager->addText("Unit Health", 10, CAMERA_HEIGHT - 60, "Unit health", "arial", white);
-	uiManager->addText("Unit Movement Range", 10, CAMERA_HEIGHT - (60 - FONT_SIZE), "Unit Movement Range", "arial", white);
+	uiManager->addText("Unit Name", 10, CAMERA_HEIGHT - 60, "Unit name", "arial", white);
+	uiManager->addText("Unit Health", 10, CAMERA_HEIGHT - (60 - FONT_SIZE), "Unit health", "arial", white);
+	uiManager->addText("Unit Movement Range", 10, CAMERA_HEIGHT - (60 - FONT_SIZE * 2), "Unit Movement Range", "arial", white);
 }
 
 void PlayerManager::updateUI() {
 	std::stringstream player;
+	std::stringstream unitName;
 	std::stringstream unitHealth;
 	std::stringstream unitMovementRange;
 
 	player << "Player gold: " << gold;
 	
 	if (selectedUnit != nullptr) {
+		unitName << selectedUnit->getComponent<UnitComponent>().name;
 		unitHealth << "Health: " << selectedUnit->getComponent<UnitComponent>().health;
 		unitMovementRange << "Movement Range: " << selectedUnit->getComponent<UnitComponent>().movementRange;
 	}
 
 	uiManager->updateUiText("Player", player.str());
+	uiManager->updateUiText("Unit Name", unitName.str());
 	uiManager->updateUiText("Unit Health", unitHealth.str());
 	uiManager->updateUiText("Unit Movement Range", unitMovementRange.str());
 }
@@ -90,8 +94,14 @@ void PlayerManager::calculateAvailableMoves() {
 	char unitType = selectedUnit->getComponent<UnitComponent>().type;
 	std::string unitName = selectedUnit->getComponent<UnitComponent>().name;
 
-	for (int y = 0; y < HEIGHT_MAP; y++) {
-		for (int x = 0; x < WIDTH_MAP; x++) {
+	int yStart = std::max(0, unitPos.y / SCALED_TILE_SIZE - selectedUnit->getComponent<UnitComponent>().movementRange);
+	int xStart = std::max(0, unitPos.x / SCALED_TILE_SIZE - selectedUnit->getComponent<UnitComponent>().movementRange);
+
+	int yEnd = std::min(HEIGHT_MAP, unitPos.y / SCALED_TILE_SIZE + selectedUnit->getComponent<UnitComponent>().movementRange + 1);
+	int xEnd = std::min(WIDTH_MAP, unitPos.x / SCALED_TILE_SIZE + selectedUnit->getComponent<UnitComponent>().movementRange + 1);
+
+	for (int y = yStart; y < yEnd; y++) {
+		for (int x = xStart; x < xEnd; x++) {
 			char tileType = Game::map->getTileType(x, y);
 			if (Game::unitManager->isValidTileType(tileType, unitType, unitName) && !Game::map->isTileOccupied(x, y)) {
 				if (mRange >= abs(unitPos.x / SCALED_TILE_SIZE - x) + abs(unitPos.y / SCALED_TILE_SIZE - y)) {
