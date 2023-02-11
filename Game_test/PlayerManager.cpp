@@ -5,6 +5,10 @@
 #include "MovementMap.h"
 #include "BuildingManager.h"
 #include "Game.h"
+#include <queue>
+#include <tuple>
+#include <unordered_map>
+#include "KeyHasher.h"
 
 extern Manager manager;
 
@@ -89,27 +93,69 @@ void PlayerManager::selectUnit(Entity* unit) {
 
 void PlayerManager::calculateAvailableMoves() {
 	Vector2D unitPos = selectedUnit->getComponent<TransformComponent>().position;
-	int mRange = selectedUnit->getComponent<UnitComponent>().movementRange;
+	unsigned char mRange = selectedUnit->getComponent<UnitComponent>().movementRange;
 	
 	char unitType = selectedUnit->getComponent<UnitComponent>().type;
 	std::string unitName = selectedUnit->getComponent<UnitComponent>().name;
 
-	int yStart = std::max(0, unitPos.y / SCALED_TILE_SIZE - selectedUnit->getComponent<UnitComponent>().movementRange);
-	int xStart = std::max(0, unitPos.x / SCALED_TILE_SIZE - selectedUnit->getComponent<UnitComponent>().movementRange);
+	// Create a queue to insert tiles that has to be checked.
+	// Contains a tuple with tile position and remaining moves
+	std::queue<std::tuple<Vector2D, unsigned char>> queue;
 
-	int yEnd = std::min(HEIGHT_MAP, unitPos.y / SCALED_TILE_SIZE + selectedUnit->getComponent<UnitComponent>().movementRange + 1);
-	int xEnd = std::min(WIDTH_MAP, unitPos.x / SCALED_TILE_SIZE + selectedUnit->getComponent<UnitComponent>().movementRange + 1);
+	// Create a map to insert valid tiles, with its remaining moves
+	std::unordered_map<Vector2D, unsigned char, std::hash<Vector2D>> moves;
 
-	for (int y = yStart; y < yEnd; y++) {
-		for (int x = xStart; x < xEnd; x++) {
-			char tileType = Game::map->getTileType(x, y);
-			if (Game::unitManager->isValidTileType(tileType, unitType, unitName) && !Game::map->isTileOccupied(x, y)) {
-				if (mRange >= abs(unitPos.x / SCALED_TILE_SIZE - x) + abs(unitPos.y / SCALED_TILE_SIZE - y)) {
-					selUnitMov[x + y * WIDTH_MAP] = 1;
+	// Insert into queue adyacent tiles to actual position and unit movement range
+	if (unitPos.x > 0) {
+		queue.push(std::make_tuple(Vector2D(unitPos.x - SCALED_TILE_SIZE, unitPos.y), mRange));
+	}
+	if (unitPos.x < WIDTH_MAP * SCALED_TILE_SIZE) {
+		queue.push(std::make_tuple(Vector2D(unitPos.x + SCALED_TILE_SIZE, unitPos.y), mRange));
+	}
+	if (unitPos.y > 0) {
+		queue.push(std::make_tuple(Vector2D(unitPos.x, unitPos.y - SCALED_TILE_SIZE), mRange));
+	}
+	if (unitPos.y < HEIGHT_MAP * SCALED_TILE_SIZE) {
+		queue.push(std::make_tuple(Vector2D(unitPos.x, unitPos.y + SCALED_TILE_SIZE), mRange));
+	}
+
+	// While exists possible tiles
+	while (!queue.empty()) {
+		Vector2D tile = std::get<0>(queue.front());
+		unsigned char remainingMoves = std::get<1>(queue.front());
+		queue.pop();
+
+		char tileType = Game::map->getTileType(tile.x / SCALED_TILE_SIZE, tile.y / SCALED_TILE_SIZE);
+
+		// If tile has moves left
+		if (remainingMoves > 0) {
+			// And is valid type of tile and not occupied
+			if (Game::unitManager->isValidTileType(tileType, unitType, unitName) && !Game::map->isTileOccupied(tile.x / SCALED_TILE_SIZE, tile.y / SCALED_TILE_SIZE)) {
+				// Insert in valid moves list
+				moves.emplace(tile, remainingMoves - 1);
+
+				// Add to queue adyacents tiles to the valid one
+				if (tile.x > 0) {
+					queue.push(std::make_tuple(Vector2D(tile.x - SCALED_TILE_SIZE, tile.y), remainingMoves - 1));
+				}
+				if (tile.x < WIDTH_MAP * SCALED_TILE_SIZE) {
+					queue.push(std::make_tuple(Vector2D(tile.x + SCALED_TILE_SIZE, tile.y), remainingMoves - 1));
+				}
+				if (tile.y > 0) {
+					queue.push(std::make_tuple(Vector2D(tile.x, tile.y - SCALED_TILE_SIZE), remainingMoves - 1));
+				}
+				if (tile.y < HEIGHT_MAP * SCALED_TILE_SIZE) {
+					queue.push(std::make_tuple(Vector2D(tile.x, tile.y + SCALED_TILE_SIZE), remainingMoves - 1));
 				}
 			}
 		}
 	}
+
+	// Iterate over all valid tiles and set valid into movementBitMap
+	for (auto& m : moves) {
+		selUnitMov[m.first.x / SCALED_TILE_SIZE + m.first.y / SCALED_TILE_SIZE * WIDTH_MAP] = 1;
+	}
+
 
 	Game::movementMap->mapUpdateRequest();
 }

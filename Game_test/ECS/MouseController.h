@@ -108,7 +108,7 @@ public:
 
 			switch (Game::event.button.button) {
 			case SDL_BUTTON_LEFT:
-				if (xTileScreen == xTileTransform && yTileScreen == yTileTransform) {
+				if (xTileScreen == xTileTransform && yTileScreen == yTileTransform && building->player->selectedUnit == nullptr) {
 					for (auto const& u : posibleUnits) {
 						std::cout << u << std::endl;
 					}

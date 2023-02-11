@@ -157,6 +157,7 @@
     <ClInclude Include="ECS\MouseController.h" />
     <ClInclude Include="ECS\TileComponent.h" />
     <ClInclude Include="BuildingManager.h" />
+    <ClInclude Include="KeyHasher.h" />
     <ClInclude Include="MovementMap.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="ECS\UIText.h" />

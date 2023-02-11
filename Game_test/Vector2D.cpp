@@ -74,8 +74,8 @@ Vector2D& Vector2D::operator/=(const Vector2D& vec) {
 	return this->Divide(vec);
 }
 
-bool Vector2D::operator==(const Vector2D& vec) {
-	return this->x == vec.x && this->y == vec.y;
+bool Vector2D::operator==(const Vector2D& vec) const {
+	return (this->x == vec.x && this->y == vec.y);
 }
 
 Vector2D& Vector2D::operator*(const int& i) {
